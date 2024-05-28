@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { FormDictItemProps } from "./utils/types";
+import { FormCheckCfgItemProps } from "./utils/types";
 import ReCol from "@/components/ReCol";
 import Segmented from "@/components/ReSegmented";
 import { enabledOptions } from "@/utils/constants";
 
-const prop = withDefaults(defineProps<FormDictItemProps>(), {
+const prop = withDefaults(defineProps<FormCheckCfgItemProps>(), {
   formInline: () => ({
     id: undefined,
-    label: "",
-    value: "",
-    sort: 0,
+    cfgId: "",
+    svnPath: "",
     enabled: true,
-    dict: undefined
+    cfg: undefined
   })
 });
 
@@ -28,38 +27,16 @@ defineExpose({ getRef });
   <el-form ref="ruleFormRef" :model="newFormInline" label-width="82px">
     <el-row :gutter="30">
       <re-col :value="12" :xs="24" :sm="24">
-        <el-form-item label="字典" prop="dict">
+        <el-form-item label="SVN路径" prop="dict">
           <el-input
-            v-model="newFormInline.dict.name"
+            v-model="newFormInline.svnPath"
             clearable
-            placeholder="请输入字典"
+            placeholder="请输入SVN路径"
             disabled
           />
         </el-form-item>
       </re-col>
-      <re-col :value="12" :xs="24" :sm="24">
-        <el-form-item label="字典项名称" prop="label">
-          <el-input
-            v-model="newFormInline.label"
-            clearable
-            placeholder="请输入字典项名称"
-          />
-        </el-form-item>
-      </re-col>
-      <re-col :value="12" :xs="24" :sm="24">
-        <el-form-item label="字典项值" prop="value">
-          <el-input
-            v-model="newFormInline.value"
-            clearable
-            placeholder="请输入字典项值"
-          />
-        </el-form-item>
-      </re-col>
-      <re-col :value="12" :xs="24" :sm="24">
-        <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="newFormInline.sort" :min="0" :max="99" />
-        </el-form-item>
-      </re-col>
+
       <re-col :value="12" :xs="24" :sm="24">
         <el-form-item label="是否启用" prop="enabled">
           <Segmented
@@ -70,16 +47,6 @@ defineExpose({ getRef });
                 newFormInline.enabled = value;
               }
             "
-          />
-        </el-form-item>
-      </re-col>
-      <re-col :value="24" :xs="24" :sm="24">
-        <el-form-item label="描述" prop="description">
-          <el-input
-            v-model="newFormInline.description"
-            type="textarea"
-            clearable
-            placeholder="请输入描述"
           />
         </el-form-item>
       </re-col>

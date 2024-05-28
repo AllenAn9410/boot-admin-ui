@@ -5,6 +5,10 @@ import type { SearchFormItems } from "@/components/ReSearchForm/src/types";
 import type { OptionsType } from "@/components/ReSegmented";
 import type { PaginationProps } from "@pureadmin/table";
 import * as checkCfgApi from "@/api/sys/checkCfg";
+import { message } from "@/utils/message";
+import { addDialog } from "@/components/ReDialog";
+import editForm from "../itemForm.vue";
+import * as dictApi from "@/api/sys/dict";
 
 export function checkCfgItem(checkCfgItem?: FormItemCheckCfgProps) { 
   const { tagEnabledStyle } = usePublicHooks();
@@ -101,6 +105,18 @@ export function checkCfgItem(checkCfgItem?: FormItemCheckCfgProps) {
     ]
   });
 
+  async function handleAdd(cfg: FormItemCheckCfgProps) {
+    if (!cfg) {
+      message("请先保存字典", { type: "warning" });
+      return;
+    }
+    if (!cfg.id) {
+      message("请先保存字典", { type: "warning" });
+      return;
+    }
+    openDialog("新增", { cfg: checkCfg });
+  }
+
   function handleSetSearchForm(data?: any) {
     cfgItemSearchData.data = data;
   }
@@ -129,5 +145,60 @@ export function checkCfgItem(checkCfgItem?: FormItemCheckCfgProps) {
       pagination.total = data?.total || 0;
     }
   }
+async function openDialog(title = "新增", data?: FormItemCheckCfgItemProps) {
+    addDialog({
+      title: `${title}字典项`,
+      props: {
+        formInline: {
+          id: data.id ?? undefined,
+          cfg: data.cfg ?? cfgItem.value,
+          svnPath: data.svnPath ?? "",
+          enabled: data.enabled ?? true
+        }
+      },
+      width: "40%",
+      draggable: true,
+      fullscreenIcon: true,
+      closeOnClickModal: false,
+      contentRenderer: () => h(editForm, { ref: formRef }),
+      beforeSure: (done, { options }) => {
+        const FormRef = formRef.value.getRef();
+        const curData = options.props.formInline as FormItemCheckCfgItemProps;
+        function chores() {
+          message(`保存成功`, {
+            type: "success"
+          });
+          done(); // 关闭弹框
+          onSearch(); // 刷新表格数据
+        }
+        FormRef.validate(async valid => {
+          if (valid) {
+            if (curData.id) {
+              const { success } = await dictApi.updateDictItem(curData);
+              if (success) {
+                chores();
+              }
+            } else {
+              const { success } = await dictApi.saveDictItem(curData);
+              if (success) {
+                chores();
+              }
+            }
+          }
+        });
+      }
+    });
+  }
+
+  return {
+    cfgItemSearchData,
+    cfgItemTableData,
+    permissions,
+    pagination,
+    handleSetSearchForm,
+    handleChangeCurrentPage,
+    handleChangePageSize,
+    onSearch
+  };
 
 }

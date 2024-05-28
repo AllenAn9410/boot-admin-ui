@@ -1,6 +1,5 @@
 import { h, onMounted, reactive, ref } from "vue";
 import editForm from "../form.vue";
-import permissionTreeForm from "../tree.vue";
 import type { OptionsType } from "@/components/ReSegmented";
 import type { PaginationProps } from "@pureadmin/table";
 import type { FormItemCheckCfgProps, FormItemCheckCfgItemProps } from "./types";
@@ -261,71 +260,7 @@ export function checkCfg() {
       pagination.total = data.total;
     }
   }
-  /**
-   * 角色赋权
-   */
-  function openPermission(row?: any) {
-    addDrawer({
-      title: "角色权限配置",
-      props: {
-        formInline: {
-          role: row,
-          selectedIds: []
-        }
-      },
-      width: "45%",
-      fullscreenIcon: true,
-      closeOnClickModal: false,
-      footerButtons: [
-        {
-          label: "取消",
-          bg: true,
-          btnClick: ({ drawer: { options, index } }) => {
-            const done = () =>
-              closeDrawer(options, index, { command: "cancel" });
-            if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
-              options.beforeCancel(done, { options, index });
-            } else {
-              done();
-            }
-          }
-        },
-        {
-          label: "确认",
-          type: "primary",
-          bg: true,
-          confirm: true,
-          tips: "是否更新当前角色的权限信息",
-          btnClick: ({ drawer: { options, index } }) => {
-            const done = () => closeDrawer(options, index, { command: "sure" });
-            if (options?.beforeSure && isFunction(options?.beforeSure)) {
-              options.beforeSure(done, { options, index });
-            } else {
-              done();
-            }
-          }
-        }
-      ],
-      contentRenderer: () => h(permissionTreeForm, { ref: treeRef }),
-      beforeSure: async (done, { options }) => {
-        const curData = options.props.formInline;
-        function chores() {
-          message(`更新成功`, {
-            type: "success"
-          });
-          done(); // 关闭弹框
-          onSearch(); // 刷新表格数据
-        }
-        const { success } = await assignPermission(
-          curData.role?.id,
-          curData.selectedIds
-        );
-        if (success) {
-          chores();
-        }
-      }
-    });
-  }
+
   async function handleDeleteCheckCfg(row: any) {
     const { success } = await deleteCheckCfg(row.id);
     if (success) {
@@ -381,7 +316,6 @@ export function checkCfg() {
     handleChangeCurrentPage,
     handleChangePageSize,
     handleDeleteCheckCfg,
-    openPermission,
     openDrawer
   };
 }

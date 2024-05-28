@@ -15,7 +15,6 @@ const {
   handleChangeCurrentPage,
   handleChangePageSize,
   handleDeleteCheckCfg,
-  openPermission,
   openDrawer
 } = checkCfg();
 
@@ -81,16 +80,6 @@ defineOptions({
               @click="openDialog('修改', row)"
             >
               修改 <el-divider direction="vertical" />
-            </el-link>
-
-            <el-link
-              v-auth="permission.assignPermission"
-              type="primary"
-              :underline="false"
-              :size="size"
-              @click="openDrawer('新增', row)"
-            >
-              路径 <el-divider direction="vertical" />
             </el-link>
 
             <el-popconfirm

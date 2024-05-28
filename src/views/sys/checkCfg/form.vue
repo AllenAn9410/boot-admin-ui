@@ -4,6 +4,8 @@ import ReSegmented from "@/components/ReSegmented";
 import { checkCfgFormRules } from "./utils/rules";
 import { enabledOptions } from "@/utils/constants";
 import { checkCfgItem } from "./utils/itemHook";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+
 import type {
   FormItemCheckCfgItemProps,
   FormItemCheckCfgProps,
@@ -38,7 +40,11 @@ function getRef() {
 
 defineExpose({ getRef });
 
-const {} = checkCfgItem(newFormInline.value);
+const {
+  cfgItemSearchData,
+  cfgItemTableData,
+  permissions
+} = checkCfgItem(newFormInline.value);
 </script>
 
 <template>
@@ -104,4 +110,80 @@ const {} = checkCfgItem(newFormInline.value);
       />
     </el-form-item>
   </el-form>
+  <PureTableBar :columns="cfgItemTableData.columns">
+      <template #title>
+        <div>
+          <el-button
+            v-auth="permissions.add"
+            type="primary"
+            :icon="useRenderIcon('ri:add-fill')"
+            @click="handleAdd(newFormInline)"
+            >新增字典项</el-button
+          >
+          <el-button type="primary" :icon="useRenderIcon('ri:import-fill')"
+            >导入</el-button
+          >
+          <el-button type="primary" :icon="useRenderIcon('ri:export-fill')"
+            >导出</el-button
+          >
+          <el-link
+            type="primary"
+            :icon="useRenderIcon('ri:download-fill')"
+            :underline="false"
+            class="ml-2"
+            >模板下载</el-link
+          >
+        </div>
+      </template>
+      <template v-slot="{ size, dynamicColumns }">
+        <PureTable
+          ref="tableRef"
+          row-key="id"
+          border
+          adaptive
+          :adaptiveConfig="{ offsetBottom: 108 }"
+          align-whole="center"
+          table-layout="auto"
+          :loading="tableData.loading"
+          :size="size"
+          :data="tableData.dataList"
+          :columns="dynamicColumns"
+          :pagination="pagination"
+          :paginationSmall="size === 'small' ? true : false"
+          :header-cell-style="{
+            background: 'var(--el-fill-color-light)',
+            color: 'var(--el-text-color-primary)'
+          }"
+          @page-current-change="handleChangeCurrentPage"
+          @page-size-change="handleChangePageSize"
+        >
+          <template #operation="{ row }">
+            <div class="flex justify-center items-center">
+              <el-link
+                v-auth="permissions.edit"
+                class="reset-margin"
+                type="primary"
+                :underline="false"
+                @click="handleEdit(row, newFormInline)"
+              >
+                修改 <el-divider direction="vertical" />
+              </el-link>
+              <el-popconfirm title="确认删除吗？" @confirm="handleDelete(row)">
+                <template #reference>
+                  <el-link
+                    v-auth="permissions.delete"
+                    class="reset-margin"
+                    type="danger"
+                    :underline="false"
+                  >
+                    删除
+                  </el-link>
+                </template>
+              </el-popconfirm>
+            </div>
+          </template>
+        </PureTable>
+      </template>
+    </PureTableBar>
 </template>
+
