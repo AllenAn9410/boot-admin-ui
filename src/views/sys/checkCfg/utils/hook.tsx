@@ -3,7 +3,7 @@ import editForm from "../form.vue";
 import permissionTreeForm from "../tree.vue";
 import type { OptionsType } from "@/components/ReSegmented";
 import type { PaginationProps } from "@pureadmin/table";
-import type { FormCheckCfgItemProps, FormCheckCfgProps, FormItemCheckCfgProps, FormItemCheckCfgItemProps } from "./types";
+import type { FormItemCheckCfgProps, FormItemCheckCfgItemProps } from "./types";
 import { addDialog } from "@/components/ReDialog";
 import { pageCheckCfg } from "@/api/sys/checkCfg";
 import * as checkCfgApi from "@/api/sys/checkCfg";
