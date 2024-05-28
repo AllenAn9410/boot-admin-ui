@@ -164,7 +164,7 @@ defineExpose({ getRef, refreshInfo, getFormInfo });
                     type="danger"
                     :underline="false"
                   >
-                    删除 <el-divider direction="vertical" />
+                    删除
                   </el-link>
                 </template>
               </el-popconfirm>
