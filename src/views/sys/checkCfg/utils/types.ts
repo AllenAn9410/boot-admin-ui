@@ -12,10 +12,10 @@ interface FormItemCheckCfgProps {
 
 interface FormItemCheckCfgItemProps {
   id?: string;
-  cfgId: string;
-  svnPath: string;
-  enabled: boolean;
-  cfg?: FormItemCheckCfgProps; 
+  cfgId?: string;
+  svnPath?: string;
+  enabled?: boolean;
+  sysCheckCfg?: FormItemCheckCfgProps; 
 }
 
 interface FormCheckCfgProps { 
@@ -27,4 +27,9 @@ interface FormCheckCfgItemProps {
 }
 
 
-export type { FormItemCheckCfgProps, FormItemCheckCfgItemProps, FormCheckCfgProps, FormCheckCfgItemProps };
+export type {
+  FormItemCheckCfgProps,
+  FormItemCheckCfgItemProps,
+  FormCheckCfgProps,
+  FormCheckCfgItemProps
+};

@@ -5,6 +5,7 @@ import { checkCfgFormRules } from "./utils/rules";
 import { enabledOptions } from "@/utils/constants";
 import { checkCfgItem } from "./utils/itemHook";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { PureTableBar } from "@/components/RePureTableBar/index";
 
 import type {
   FormItemCheckCfgItemProps,
@@ -43,74 +44,81 @@ defineExpose({ getRef });
 const {
   cfgItemSearchData,
   cfgItemTableData,
-  permissions
+  permissions,
+  handleAdd,
+  handleEdit,
+  handleDelete,
+  handleChangeCurrentPage,
+  handleChangePageSize,
+  pagination
 } = checkCfgItem(newFormInline.value);
 </script>
 
 <template>
-  <el-form
-    ref="ruleFormRef"
-    :model="newFormInline"
-    :rules="checkCfgFormRules"
-    label-width="82px"
-  >
-    <el-form-item label="项目名称" prop="projectName">
-      <el-input
-        v-model="newFormInline.projectName"
-        clearable
-        placeholder="请输入项目名称"
-        :disabled="!!newFormInline.id"
-      />
-    </el-form-item>
+  <div>
+    <el-form
+      ref="ruleFormRef"
+      :model="newFormInline"
+      :rules="checkCfgFormRules"
+      label-width="82px"
+    >
+      <el-form-item label="项目名称" prop="projectName">
+        <el-input
+          v-model="newFormInline.projectName"
+          clearable
+          placeholder="请输入项目名称"
+          :disabled="!!newFormInline.id"
+        />
+      </el-form-item>
 
-    <el-form-item label="WT ID" prop="worktileProjectId">
-      <el-input
-        v-model="newFormInline.worktileProjectId"
-        clearable
-        placeholder="请输入worktile ID"
-      />
-    </el-form-item>
+      <el-form-item label="WT ID" prop="worktileProjectId">
+        <el-input
+          v-model="newFormInline.worktileProjectId"
+          clearable
+          placeholder="请输入worktile ID"
+        />
+      </el-form-item>
 
-    <el-form-item label="WT账号" prop="worktileAccId">
-      <el-input
-        v-model="newFormInline.worktileAccId"
-        clearable
-        placeholder="请输入worktile账号"
-      />
-    </el-form-item>
+      <el-form-item label="WT账号" prop="worktileAccId">
+        <el-input
+          v-model="newFormInline.worktileAccId"
+          clearable
+          placeholder="请输入worktile账号"
+        />
+      </el-form-item>
 
-    <el-form-item label="WT密码" prop="worktileAccPwd">
-      <el-input
-        v-model="newFormInline.worktileAccPwd"
-        clearable
-        placeholder="请输入worktile密码"
-      />
-    </el-form-item>
+      <el-form-item label="WT密码" prop="worktileAccPwd">
+        <el-input
+          v-model="newFormInline.worktileAccPwd"
+          clearable
+          placeholder="请输入worktile密码"
+        />
+      </el-form-item>
 
-    <el-form-item label="SVN账号" prop="svnAccId">
-      <el-input
-        v-model="newFormInline.svnAccId"
-        clearable
-        placeholder="请输入SVN账号"
-      />
-    </el-form-item>
+      <el-form-item label="SVN账号" prop="svnAccId">
+        <el-input
+          v-model="newFormInline.svnAccId"
+          clearable
+          placeholder="请输入SVN账号"
+        />
+      </el-form-item>
 
-    <el-form-item label="SVN密码" prop="svnAccPwd">
-      <el-input
-        v-model="newFormInline.svnAccPwd"
-        clearable
-        placeholder="请输入SVN密码"
-      />
-    </el-form-item>
-    <el-form-item label="拥有者" prop="ownPhone">
-      <el-input
-        v-model="newFormInline.ownPhone"
-        clearable
-        placeholder="请输入拥有者"
-      />
-    </el-form-item>
-  </el-form>
-  <PureTableBar :columns="cfgItemTableData.columns">
+      <el-form-item label="SVN密码" prop="svnAccPwd">
+        <el-input
+          v-model="newFormInline.svnAccPwd"
+          clearable
+          placeholder="请输入SVN密码"
+        />
+      </el-form-item>
+      <el-form-item label="拥有者" prop="ownPhone">
+        <el-input
+          v-model="newFormInline.ownPhone"
+          clearable
+          placeholder="请输入拥有者"
+        />
+      </el-form-item>
+    </el-form>
+    <PureTableBar :columns="cfgItemTableData.columns">
       <template #title>
         <div>
           <el-button
@@ -118,20 +126,7 @@ const {
             type="primary"
             :icon="useRenderIcon('ri:add-fill')"
             @click="handleAdd(newFormInline)"
-            >新增字典项</el-button
-          >
-          <el-button type="primary" :icon="useRenderIcon('ri:import-fill')"
-            >导入</el-button
-          >
-          <el-button type="primary" :icon="useRenderIcon('ri:export-fill')"
-            >导出</el-button
-          >
-          <el-link
-            type="primary"
-            :icon="useRenderIcon('ri:download-fill')"
-            :underline="false"
-            class="ml-2"
-            >模板下载</el-link
+            >新增SVN路径</el-button
           >
         </div>
       </template>
@@ -144,9 +139,9 @@ const {
           :adaptiveConfig="{ offsetBottom: 108 }"
           align-whole="center"
           table-layout="auto"
-          :loading="tableData.loading"
+          :loading="cfgItemTableData.loading"
           :size="size"
-          :data="tableData.dataList"
+          :data="cfgItemTableData.dataList"
           :columns="dynamicColumns"
           :pagination="pagination"
           :paginationSmall="size === 'small' ? true : false"
@@ -185,5 +180,5 @@ const {
         </PureTable>
       </template>
     </PureTableBar>
+  </div>
 </template>
-

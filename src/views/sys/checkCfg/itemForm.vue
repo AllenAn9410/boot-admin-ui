@@ -26,17 +26,17 @@ defineExpose({ getRef });
 <template>
   <el-form ref="ruleFormRef" :model="newFormInline" label-width="82px">
     <el-row :gutter="30">
-      <re-col :value="12" :xs="24" :sm="24">
+      <re-col :value="24" :xs="24" :sm="24">
         <el-form-item label="SVN路径" prop="dict">
           <el-input
             v-model="newFormInline.svnPath"
             clearable
             placeholder="请输入SVN路径"
-            disabled
           />
         </el-form-item>
       </re-col>
-
+    </el-row>
+    <el-row>
       <re-col :value="12" :xs="24" :sm="24">
         <el-form-item label="是否启用" prop="enabled">
           <Segmented

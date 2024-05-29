@@ -92,11 +92,6 @@ export function checkCfgItem(checkCfgItem?: FormItemCheckCfgProps) {
         )
       },
       {
-        label: "创建时间",
-        prop: "created",
-        align: "center"
-      },
-      {
         label: "操作",
         align: "center",
         fixed: "right",
@@ -105,16 +100,41 @@ export function checkCfgItem(checkCfgItem?: FormItemCheckCfgProps) {
     ]
   });
 
-  async function handleAdd(cfg: FormItemCheckCfgProps) {
-    if (!cfg) {
+  async function handleAdd(sysCheckCfg: FormItemCheckCfgProps) {
+    if (!sysCheckCfg) {
+      message("请先保存配置", { type: "warning" });
+      return;
+    }
+    if (!sysCheckCfg.id) {
+      message("请先保存配置", { type: "warning" });
+      return;
+    }
+    openDialog("新增", { sysCheckCfg: sysCheckCfg });
+  }
+
+  async function handleEdit(row: FormItemCheckCfgProps, sysCheckCfg: FormItemCheckCfgProps) {
+    if (!sysCheckCfg) {
       message("请先保存字典", { type: "warning" });
       return;
     }
-    if (!cfg.id) {
+    if (!sysCheckCfg.id) {
       message("请先保存字典", { type: "warning" });
       return;
     }
-    openDialog("新增", { cfg: checkCfg });
+    openDialog("新增", { ...row, sysCheckCfg: sysCheckCfg });
+  }
+
+  async function handleDelete(row: FormItemCheckCfgProps) {
+    cfgItemTableData.loading = true;
+    const { success } = await checkCfgApi.delCheckCfgItem(row.id).finally(() => {
+      cfgItemTableData.loading = false;
+    });
+    if (success) {
+      message(`删除成功`, {
+        type: "success"
+      });
+      onSearch();
+    }
   }
 
   function handleSetSearchForm(data?: any) {
@@ -145,13 +165,14 @@ export function checkCfgItem(checkCfgItem?: FormItemCheckCfgProps) {
       pagination.total = data?.total || 0;
     }
   }
-async function openDialog(title = "新增", data?: FormItemCheckCfgItemProps) {
+  async function openDialog(title = "新增", data?: FormItemCheckCfgItemProps) {
     addDialog({
-      title: `${title}字典项`,
+      title: `${title}路径`,
       props: {
         formInline: {
           id: data.id ?? undefined,
-          cfg: data.cfg ?? cfgItem.value,
+          sysCheckCfg: data.sysCheckCfg ?? cfgItem.value,
+          cfgId: data.sysCheckCfg.id ?? "",
           svnPath: data.svnPath ?? "",
           enabled: data.enabled ?? true
         }
@@ -174,12 +195,12 @@ async function openDialog(title = "新增", data?: FormItemCheckCfgItemProps) {
         FormRef.validate(async valid => {
           if (valid) {
             if (curData.id) {
-              const { success } = await dictApi.updateDictItem(curData);
+              const { success } = await checkCfgApi.updateCheckCfgItem(curData);
               if (success) {
                 chores();
               }
             } else {
-              const { success } = await dictApi.saveDictItem(curData);
+              const { success } = await checkCfgApi.saveCheckCfgItem(curData);
               if (success) {
                 chores();
               }
@@ -198,7 +219,10 @@ async function openDialog(title = "新增", data?: FormItemCheckCfgItemProps) {
     handleSetSearchForm,
     handleChangeCurrentPage,
     handleChangePageSize,
-    onSearch
+    onSearch,
+    handleAdd,
+    handleEdit,
+    handleDelete
   };
 
 }
