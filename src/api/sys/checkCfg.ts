@@ -43,7 +43,7 @@ export function delCheckCfg(id: string) {
  * @param query .
  * @returns
  */
-export function listCheckCfgItem(query?: any) {
+export function pageCheckCfgItem(query?: any) {
   return http.get<any, any>(`/sys/checkCfg/item/page`, query);
 }
 
